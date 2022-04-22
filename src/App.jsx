@@ -13,14 +13,23 @@ import "./App.css";
 import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState([
+
+  ]);
 
   useEffect(() => {
     const fetchTasks = async () => {
       const { data } = await axios.get(
         "https://jsonplaceholder.cypress.io/todos?_limit=10"
       );
-      setTasks(data);
+      const newMap = data.map(a => {
+        console.log('irmak', a)
+        return {
+          ...a,
+          title: `${a.title} ırmak`
+        }
+      })
+      setTasks(newMap);
     };
     fetchTasks();
   }, []);
@@ -43,7 +52,7 @@ const App = () => {
         completed: false,
       },
     ];
-    
+
     setTasks(newTasks);
   };
 
@@ -63,11 +72,17 @@ const App = () => {
           render={() => (
             <>
               <AddTask handleTaskAddition={handleTaskAddition} />
-              <Tasks
-                tasks={tasks}
-                handleTaskClick={handleTaskClick}
-                handleTaskDeletion={handleTaskDeletion}
-              />
+              {
+                tasks.length === 0
+                  ? <p style={{color:'white'}}>Yükleniyor</p>
+                    :<Tasks
+                        tasks={tasks}
+                        handleTaskClick={handleTaskClick}
+                        handleTaskDeletion={handleTaskDeletion}
+                    />
+
+              }
+
             </>
           )}
         />
